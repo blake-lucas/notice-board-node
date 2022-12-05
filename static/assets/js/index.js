@@ -79,8 +79,15 @@ const eventSource = new EventSource('/messages/live');
 
 eventSource.onmessage = (event) => {
 	const data = JSON.parse(event.data);
-	// Add the message element to the messages container
-	create_message(data.id, data.name, data.content, data.timestamp)
+    // Check if the received event is a 'message' event or a 'delete' event
+    if (data.event === 'message') {
+        // Add the message element to the messages container
+        create_message(data.id, data.name, data.content, data.timestamp);
+    }
+	else if (data.event === 'delete') {
+        // Delete the message from the messages container
+        delete_message(data.id);
+    }
 };
 
 function create_message(id, name, content, timestamp) {
@@ -90,40 +97,48 @@ function create_message(id, name, content, timestamp) {
 }
 
 const send_message = () => {
-	var name = document.getElementById("name").value
-	var content = document.getElementById("message").value
+    var name = document.getElementById("name").value
+    var content = document.getElementById("message").value
 
-	fetch('/messages', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				name,
-				content
-			})
-		})
-		.then((res) => res.json())
-		.then((data) => console.log(data))
-		.catch((err) => console.error(err));
-};
+    fetch('/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                content
+            })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            // When the new message is added, call the create_message function
+            // to add it to the UI
+            create_message(data.id, name, content, Date.now());
+        });
+}
+
 
 const getMessages = () => {
 	fetch('/messages')
-		.then((res) => res.json())
-		.then((data) => {
-			data.forEach((msg) => {
-				console.log(msg)
-				create_message(msg.id, msg.name, msg.content, msg.timestamp)
-			})
+	.then((res) => res.json())
+	.then((data) => {
+		data.forEach((msg) => {
+			console.log(msg)
+			create_message(msg.id, msg.name, msg.content, msg.timestamp)
 		})
-		.catch((err) => console.error(err));
+	})
+	.catch((err) => console.error(err));
 };
 
 // Request all messages
 getMessages();
 
 const archiveMessage = (id) => {
+	const messageElement = document.getElementById(id);
+    if (messageElement) {
+        messageElement.parentNode.removeChild(messageElement);
+    }
     fetch(`/messages/${id}/archive`, {
       method: 'POST'
     })
@@ -134,6 +149,10 @@ const archiveMessage = (id) => {
       .catch((err) => console.error(err));
   };
 const deleteMessage = (id) => {
+	const messageElement = document.getElementById(id);
+    if (messageElement) {
+        messageElement.parentNode.removeChild(messageElement);
+    }
 	fetch(`/messages/${id}`, {
 			method: 'DELETE'
 		})

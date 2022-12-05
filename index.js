@@ -56,7 +56,6 @@ function addMessage(name, content) {
 						content,
 						timestamp
 					});
-
 					resolve(this.lastID);
 				}
 			}
@@ -79,25 +78,27 @@ function deleteMessage(id) {
 
 // Archive a message by moving it from the messages table to the archive table
 function archiveMessage(id) {
-	return new Promise((resolve, reject) => {
-		db.get('SELECT name, content, timestamp FROM messages WHERE id = ?', [id], (err, row) => {
-			if (err) {
-				reject(err);
-			}
+    return new Promise((resolve, reject) => {
+        db.get('SELECT name, content, timestamp FROM messages WHERE id = ?', [id], (err, row) => {
+            if (err) {
+                reject(err);
+            }
             else {
-				db.run('INSERT INTO archive (name, content, timestamp) VALUES (?, ?, ?)', [row.name, row.content, row.timestamp], function(err) {
-					if (err) {
-						reject(err);
-					} 
+                db.run('INSERT INTO archive (name, content, timestamp) VALUES (?, ?, ?)', [row.name, row.content, row.timestamp], function(err) {
+                    if (err) {
+                        reject(err);
+                    } 
                     else {
-						deleteMessage(id)
-							.then(() => resolve(this.lastID))
-							.catch((err) => reject(err));
-					}
-				});
-			}
-		});
-	});
+                        // Emit a 'delete' event to delete the message from the front-end
+                        emitter.emit('delete', { id });
+                        deleteMessage(id)
+                            .then(() => resolve(this.lastID))
+                            .catch((err) => reject(err));
+                    }
+                });
+            }
+        });
+    });
 }
 
 // Parse request bodies as JSON
@@ -156,6 +157,13 @@ app.get('/messages/live', (req, res) => {
 		res.write(`event: message\n`);
 		res.write(`data: ${JSON.stringify(data)}\n\n`);
 	});
+	emitter.on('delete', (data) => {
+		// The 'data' argument will contain the ID of the message to be deleted
+		// You can use this ID to delete the message from the database
+		deleteMessage(data.id)
+			.then(() => console.log(`Message with ID ${data.id} was deleted`))
+			.catch((err) => console.error(err));
+	});	
 });
 
 app.listen(port, () => console.log(`Notice board listening at http://localhost:${port}`));
