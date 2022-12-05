@@ -75,7 +75,7 @@ class Message {
 	}
 }
 
-const eventSource = new EventSource('http://localhost:3000/messages/live');
+const eventSource = new EventSource('/messages/live');
 
 eventSource.onmessage = (event) => {
 	const data = JSON.parse(event.data);
@@ -93,7 +93,7 @@ const send_message = () => {
 	var name = document.getElementById("name").value
 	var content = document.getElementById("message").value
 
-	fetch('http://localhost:3000/messages', {
+	fetch('/messages', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ const send_message = () => {
 };
 
 const getMessages = () => {
-	fetch('http://localhost:3000/messages')
+	fetch('/messages')
 		.then((res) => res.json())
 		.then((data) => {
 			data.forEach((msg) => {
@@ -124,7 +124,7 @@ const getMessages = () => {
 getMessages();
 
 const archiveMessage = (id) => {
-    fetch(`http://localhost:3000/messages/${id}/archive`, {
+    fetch(`/messages/${id}/archive`, {
       method: 'POST'
     })
       .then((res) => res.json())
@@ -134,7 +134,7 @@ const archiveMessage = (id) => {
       .catch((err) => console.error(err));
   };
 const deleteMessage = (id) => {
-	fetch(`http://localhost:3000/messages/${id}`, {
+	fetch(`/messages/${id}`, {
 			method: 'DELETE'
 		})
 		.then((res) => res.json())

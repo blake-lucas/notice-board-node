@@ -2,9 +2,16 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('notice_board.db');
 const express = require('express');
 const app = express();
-const port = 3000;
 const events = require('events');
 const emitter = new events.EventEmitter();
+
+// Load the fs module
+const fs = require('fs');
+
+// Read the configuration file
+const config = JSON.parse(fs.readFileSync('config.json'));
+
+const port = config.port
 
 // Create the messages table if it does not exist
 db.run('CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, content TEXT, timestamp INTEGER)');
