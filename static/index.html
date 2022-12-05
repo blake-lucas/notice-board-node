@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="shortcut icon" href="./assets/img/mcnallan-icon.png" type="image/x-icon" />
+		<link href="./assets/scss/material-icons.css" rel="stylesheet">
+		<link rel="stylesheet" href="./assets/scss/materialize.min.css">
+		<style>
+			/* label color */
+				.input-field label {
+				color: #eee !important;
+			}
+			/* label focus color */
+			.input-field input[type=text]:focus + label {
+				color: #eee !important;
+			}
+			/* label underline focus color */
+			.input-field input[type=text]:focus {
+				border-bottom: 1px solid #eee !important;
+				box-shadow: 0 1px 0 0 #eee !important;
+			}
+			/* icon prefix focus color */
+			.input-field .prefix.active {
+				color: #eee !important;
+			}
+			.message-input {
+				color: #eee !important;
+			}			
+			.name-input {
+				color: #eee !important;
+			}
+			.mcnallan-grey {
+				background-color: #393E41 !important;
+			}
+		</style>
+	</head>
+	<body class="mcnallan-grey">
+        <div class="row grey-text text-lighten-3">
+            <div class="col s2"></div>
+            <div class="col s8 center-align"><h5 id="time-date"></h5></div>
+            <div class="col s2"></div>
+        </div>
+		<div class="row grey-text text-lighten-3" id="message-container">	<!--Message container-->
+		</div>
+		<!--Write message button-->
+		<div id="mp-button" class="fixed-action-btn">
+			<a class="btn-floating modal-trigger btn-large red" data-target="new-message">
+				<i class="large material-icons">mode_edit</i>
+			</a>
+		</div>
+		<!-- Modal Structure -->
+		<div id="new-message" class="modal bottom-sheet mcnallan-grey">
+			<div class="modal-content grey-text text-lighten-3">
+				<h4>Post a new message</h4>
+				<div class="row">
+					<div class="input-field col s1">
+						<input id="name" type="text" class="name-input">
+						<label for="name">Name</label>
+					</div>
+					<div class="input-field col s11">
+						<input id="message" type="text" class="message-input">
+						<label for="message">Message</label>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer mcnallan-grey">
+				<a href="javascript:void(0)" onClick="javascript:send_message()" class="modal-close btn-flat white-text">Send</a>
+			</div>
+		</div>
+		<!--Exta scripts-->
+		<script src="./assets/js/materialize.min.js"></script>
+		<!--Initialize components-->
+		<script src="./assets/js/index.js"></script>
+	</body>
+</html>
