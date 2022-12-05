@@ -20,7 +20,7 @@ db.run('CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMEN
 db.run('CREATE TABLE IF NOT EXISTS archive (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, content TEXT, timestamp INTEGER)');
 
 // Retrieve all messages from the messages table
-function getMessages() {
+function get_messages() {
 	return new Promise((resolve, reject) => {
 		db.all('SELECT * FROM messages', (err, rows) => {
 			if (err) {
@@ -36,7 +36,7 @@ function getMessages() {
 app.use(express.static('static'));
 
 // Add a message to the messages table
-function addMessage(name, content) {
+function add_message(name, content) {
 	// Get the current unix timestamp
 	const timestamp = Date.now();
 
@@ -64,7 +64,7 @@ function addMessage(name, content) {
 }
 
 // Delete a message from the messages table by its ID
-function deleteMessage(id) {
+function delete_message(id) {
 	return new Promise((resolve, reject) => {
 		db.run('DELETE FROM messages WHERE id = ?', [id], function(err) {
 			if (err) {
@@ -77,7 +77,7 @@ function deleteMessage(id) {
 }
 
 // Archive a message by moving it from the messages table to the archive table
-function archiveMessage(id) {
+function archive_message(id) {
     return new Promise((resolve, reject) => {
         db.get('SELECT name, content, timestamp FROM messages WHERE id = ?', [id], (err, row) => {
             if (err) {
@@ -91,7 +91,7 @@ function archiveMessage(id) {
                     else {
                         // Emit a 'delete' event to delete the message from the front-end
                         emitter.emit('delete', { id });
-                        deleteMessage(id)
+                        delete_message(id)
                             .then(() => resolve(this.lastID))
                             .catch((err) => reject(err));
                     }
@@ -106,7 +106,7 @@ app.use(express.json());
 
 // Retrieve all messages
 app.get('/messages', (req, res) => {
-	getMessages()
+	get_messages()
 		.then((messages) => res.json(messages))
 		.catch((err) => res.status(500).json({
 			error: err.message
@@ -115,7 +115,7 @@ app.get('/messages', (req, res) => {
 
 // Add a message
 app.post('/messages', (req, res) => {
-	addMessage(req.body.name, req.body.content)
+	add_message(req.body.name, req.body.content)
 		.then((id) => res.json({
 			id
 		}))
@@ -126,7 +126,7 @@ app.post('/messages', (req, res) => {
 
 // Delete a message
 app.delete('/messages/:id', (req, res) => {
-	deleteMessage(req.params.id)
+	delete_message(req.params.id)
 		.then((changes) => res.json({
 			changes
 		}))
@@ -137,7 +137,7 @@ app.delete('/messages/:id', (req, res) => {
 
 // Archive a message
 app.post('/messages/:id/archive', (req, res) => {
-	archiveMessage(req.params.id)
+	archive_message(req.params.id)
 		.then((id) => res.json({
 			id
 		}))
@@ -160,7 +160,7 @@ app.get('/messages/live', (req, res) => {
 	emitter.on('delete', (data) => {
 		// The 'data' argument will contain the ID of the message to be deleted
 		// You can use this ID to delete the message from the database
-		deleteMessage(data.id)
+		delete_message(data.id)
 			.then(() => console.log(`Message with ID ${data.id} was deleted`))
 			.catch((err) => console.error(err));
 	});	
