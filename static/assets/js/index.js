@@ -98,7 +98,6 @@ document.addEventListener('mousemove', function() {
 	  mpButton.style.display = 'none'
 	}
 })
-  
 
 class Message {
 	constructor(id, username, content, timestamp) {
@@ -162,10 +161,9 @@ class Message {
 	}
 }
 
-
 const eventSource = new EventSource('/messages/live');
 
-eventSource.onmessage = (event) => {
+eventSource.onMessage = (event) => {
 	const data = JSON.parse(event.data);
     // Check if the received event is a 'message' event or a 'delete' event
     if (data.event === 'message') {

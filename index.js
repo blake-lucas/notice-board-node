@@ -4,6 +4,21 @@ const express = require('express');
 const app = express();
 const events = require('events');
 const emitter = new events.EventEmitter();
+emitter.setMaxListeners(200);
+
+// Function to log the number of listeners for each event
+function log_listeners() {
+    // Get a list of all the events with listeners attached
+    const event_names = emitter.eventNames();
+
+    // Loop over the list of event names
+    for (const event_name of event_names) {
+        // Console.log the number of listeners for each event
+        console.log(`${event_name}: ${emitter.listenerCount(event_name)}`);
+    }
+}
+
+setInterval(log_listeners, 5000);
 
 // Load the fs module
 const fs = require('fs');
@@ -153,16 +168,34 @@ app.get('/messages/live', (req, res) => {
 
 	// Listen for 'message' events from the emitter
 	emitter.on('message', (data) => {
+		const timeout = setTimeout(() => {
+			// If the listener does not respond within the time limit, close the connection
+			console.log('Listener is unresponsive, closing connection...');
+			// Your code for closing the connection goes here...
+		}, 5000);
+
 		// Send a 'message' event with the data to the client
 		res.write(`event: message\n`);
 		res.write(`data: ${JSON.stringify(data)}\n\n`);
+
+		// If the listener responds before the time limit, clear the timeout and continue processing the event
+		clearTimeout(timeout);
 	});
 	emitter.on('delete', (data) => {
+		const timeout = setTimeout(() => {
+			// If the listener does not respond within the time limit, close the connection
+			console.log('Listener is unresponsive, closing connection...');
+			// Your code for closing the connection goes here...
+		}, 5000);
+
 		// The 'data' argument will contain the ID of the message to be deleted
 		// You can use this ID to delete the message from the database
 		delete_message(data.id)
 			.then(() => console.log(`Message with ID ${data.id} was deleted`))
 			.catch((err) => console.error(err));
+
+		// If the listener responds before the time limit, clear the timeout and continue processing the event
+		clearTimeout(timeout);
 	});	
 });
 
