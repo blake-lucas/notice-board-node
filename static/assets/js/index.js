@@ -177,7 +177,6 @@ eventSource.addEventListener('delete', (event) => {
 
 document.addEventListener('keydown', function(event) {
 	if(event.keyCode == 13) {
-		
 		// Get the send message modal element
 		var modal = document.getElementById('new-message');
 
@@ -186,7 +185,8 @@ document.addEventListener('keydown', function(event) {
 
 		// Close the modal
 		instance.close();
-
+		
+		// Send message to back end
 		send_message()
 	}
 });
