@@ -26,6 +26,7 @@ const fs = require('fs');
 // Read the configuration file
 const config = JSON.parse(fs.readFileSync('config.json'));
 
+const ip = config.ip
 const port = config.port
 
 // Create the messages table if it does not exist
@@ -54,6 +55,15 @@ app.use(express.static('static'));
 function add_message(name, content) {
 	// Get the current unix timestamp
 	const timestamp = Date.now();
+
+	// Filter out illegal characters from the name and content
+	name = name.replace(/[<>]/g, '');
+	content = content.replace(/[<>]/g, '');
+
+	// Check if the name or content is empty after filtering
+	if (!name.trim() || !content.trim()) {
+		return Promise.resolve();
+	}
 
 	return new Promise((resolve, reject) => {
 		db.run(
@@ -186,4 +196,6 @@ app.get('/messages/live', (req, res) => {
 	});	
 });
 
-app.listen(port, () => console.log(`Notice board listening at http://localhost:${port}`));
+app.listen(port, ip, () => {
+	console.log(`Notice board listening at http://${ip}:${port}`);
+});

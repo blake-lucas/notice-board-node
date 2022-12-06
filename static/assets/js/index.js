@@ -175,6 +175,11 @@ eventSource.addEventListener('delete', (event) => {
 	delete_message_object(data.id);
 });
 
+document.addEventListener('keydown', function(event) {
+	if(event.keyCode == 13) {
+		send_message()
+	}
+});
 
 // Create message object on the page itself
 function create_message(id, name, content, timestamp) {
