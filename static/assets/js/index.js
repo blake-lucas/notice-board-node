@@ -164,17 +164,13 @@ class Message {
 const eventSource = new EventSource('/messages/live');
 
 eventSource.addEventListener('message', (event) => {
-	console.log(event.type)
 	const data = JSON.parse(event.data);
-	console.log(data);
     // Add the message element to the messages container
-	// console.log("Event was a new message")
 	create_message(data.id, data.name, data.content, data.timestamp);
 });
 
 eventSource.addEventListener('delete', (event) => {
     const data = JSON.parse(event.data);
-	// console.log("Event was a delete event")
     // Delete the message from the messages container
 	delete_message_object(data.id);
 });
