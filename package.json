@@ -1,12 +1,12 @@
 {
   "name": "notice-board-node",
   "version": "1.0.0",
-  "description": "",
+  "description": "A basic notice board build on NodeJS.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Blake Lucas",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",

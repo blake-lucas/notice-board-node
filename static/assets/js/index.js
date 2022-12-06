@@ -131,7 +131,7 @@ class Message {
 
 		// Add buttons to the message element
 		var archive_button = document.createElement('button')
-		archive_button.className = 'message-button btn-small mp-button archive'
+		archive_button.className = 'archive-button message-button btn-small mp-button archive'
 		archive_button.innerHTML = 'Archive'
 		// Pass the id of the current message element to the archive_message function
 		archive_button.addEventListener('click', function() {
@@ -141,7 +141,7 @@ class Message {
 		archive_button.style.display = 'none'
 	
 		var delete_button = document.createElement('button')
-		delete_button.className = 'message-button btn-small mp-button delete_forever'
+		delete_button.className = 'delete-button message-button btn-small mp-button delete_forever'
 		delete_button.innerHTML = 'Delete'
 		// Pass the id of the current message element to the delete_message function
 		delete_button.addEventListener('click', function() {

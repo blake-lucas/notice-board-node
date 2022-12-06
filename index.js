@@ -6,20 +6,6 @@ const events = require('events');
 const emitter = new events.EventEmitter();
 emitter.setMaxListeners(200);
 
-// Function to log the number of listeners for each event
-function log_listeners() {
-    // Get a list of all the events with listeners attached
-    const event_names = emitter.eventNames();
-
-    // Loop over the list of event names
-    for (const event_name of event_names) {
-        // Console.log the number of listeners for each event
-        console.log(`${event_name}: ${emitter.listenerCount(event_name)}`);
-    }
-}
-
-setInterval(log_listeners, 5000);
-
 // Load the fs module
 const fs = require('fs');
 
@@ -64,28 +50,52 @@ function add_message(name, content) {
 	if (!name.trim() || !content.trim()) {
 		return Promise.resolve();
 	}
-
-	return new Promise((resolve, reject) => {
-		db.run(
-			'INSERT INTO messages (name, content, timestamp) VALUES (?, ?, ?)',
-			[name, content, timestamp],
-			function(err) {
-				if (err) {
-					reject(err);
+	if (content == "/bunny") {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'INSERT INTO messages (name, content, timestamp) VALUES (?, ?, ?)',
+				[name, '<img src=https://files.blakelucas.com/hidden/happy_bunny.gif height="200" width="307">', timestamp],
+				function(err) {
+					if (err) {
+						reject(err);
+					}
+					else {
+						// Emit a 'message' event with the new message data
+						emitter.emit('message', {
+							id: this.lastID,
+							name,
+							content: '<img src=https://files.blakelucas.com/hidden/happy_bunny.gif height="200" width="307">',
+							timestamp
+						});
+						resolve(this.lastID);
+					}
 				}
-                else {
-					// Emit a 'message' event with the new message data
-					emitter.emit('message', {
-						id: this.lastID,
-						name,
-						content,
-						timestamp
-					});
-					resolve(this.lastID);
+			);
+		});
+	}
+	else {
+		return new Promise((resolve, reject) => {
+			db.run(
+				'INSERT INTO messages (name, content, timestamp) VALUES (?, ?, ?)',
+				[name, content, timestamp],
+				function(err) {
+					if (err) {
+						reject(err);
+					}
+					else {
+						// Emit a 'message' event with the new message data
+						emitter.emit('message', {
+							id: this.lastID,
+							name,
+							content,
+							timestamp
+						});
+						resolve(this.lastID);
+					}
 				}
-			}
-		);
-	});
+			);
+		});
+	}
 }
 
 // Delete a message from the messages table by its ID

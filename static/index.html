@@ -31,9 +31,17 @@
 			.mcnallan-grey {
 				background-color: #393E41 !important;
 			}
-			.message-button {
+			.delete-button {
 				margin-left: 4px;
-				float: left;
+				margin-bottom: 2px;
+				position: sticky;
+				left: 95%
+			}
+			.archive-button {
+				margin-left: 4px;
+				margin-bottom: 2px;
+				position: sticky;
+				left: 95%
 			}
 		</style>
 	</head>
@@ -49,8 +57,8 @@
 				<div class="col s1 center-align">name</div>
 				<div class="col s9" style="overflow-wrap: break-word;">message content</div>
 				<div class="col s2 right-align">12/5 10:28:23 AM</div>
-				<button class="message-button btn-small mp-button archive" style="display: none;" id="archive">Archive</button>
-				<button class="message-button btn-small mp-button delete_forever" style="display: none;" id="delete_forever">Delete</button>
+				<button class="message-button btn-small mp-button archive" style="display: none; position: relative; left: 95%" id="archive">Archive</button>
+				<button class="message-button btn-small mp-button delete_forever" style="display: none; position: relative; left: 86%" id="delete_forever">Delete</button>
 			</div>-->
 		</div>
 		<!--Write message and edit buttons-->
