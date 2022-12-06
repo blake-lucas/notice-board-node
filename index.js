@@ -50,11 +50,13 @@ function add_message(name, content) {
 	if (!name.trim() || !content.trim()) {
 		return Promise.resolve();
 	}
+
+	//
 	if (content == "/bunny") {
 		return new Promise((resolve, reject) => {
 			db.run(
 				'INSERT INTO messages (name, content, timestamp) VALUES (?, ?, ?)',
-				[name, '<img src=https://files.blakelucas.com/hidden/happy_bunny.gif height="200" width="307">', timestamp],
+				[name, '<img src=/assets/img/happy_bunny.gif height="200" width="307">', timestamp],
 				function(err) {
 					if (err) {
 						reject(err);
@@ -64,7 +66,7 @@ function add_message(name, content) {
 						emitter.emit('message', {
 							id: this.lastID,
 							name,
-							content: '<img src=https://files.blakelucas.com/hidden/happy_bunny.gif height="200" width="307">',
+							content: '<img src=/assets/img/happy_bunny.gif height="200" width="307">',
 							timestamp
 						});
 						resolve(this.lastID);
