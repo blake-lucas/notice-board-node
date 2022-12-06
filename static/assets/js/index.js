@@ -163,18 +163,22 @@ class Message {
 
 const eventSource = new EventSource('/messages/live');
 
-eventSource.onMessage = (event) => {
+eventSource.addEventListener('message', (event) => {
+	console.log(event.type)
 	const data = JSON.parse(event.data);
-    // Check if the received event is a 'message' event or a 'delete' event
-    if (data.event === 'message') {
-        // Add the message element to the messages container
-        create_message(data.id, data.name, data.content, data.timestamp);
-    }
-	else if (data.event === 'delete') {
-        // Delete the message from the messages container
-        delete_message(data.id);
-    }
-};
+	console.log(data);
+    // Add the message element to the messages container
+	// console.log("Event was a new message")
+	create_message(data.id, data.name, data.content, data.timestamp);
+});
+
+eventSource.addEventListener('delete', (event) => {
+    const data = JSON.parse(event.data);
+	// console.log("Event was a delete event")
+    // Delete the message from the messages container
+	delete_message_object(data.id);
+});
+
 
 // Create message object on the page itself
 function create_message(id, name, content, timestamp) {
@@ -201,7 +205,7 @@ const send_message = () => {
 	.then((data) => {
 	  // When the new message is added, call the create_message function
 	  // to add it to the UI
-	  create_message(data.id, name, content, Date.now());
+	  // create_message(data.id, name, content, Date.now());
   
 	  // Clear the input fields
 	  document.getElementById("name").value = ""
@@ -248,6 +252,8 @@ const delete_message = (id) => {
 			// Do something with the data
 		})
 		.catch((err) => console.error(err));
+};
+const delete_message_object = (id) => {
 	const messageElement = document.getElementById(id);
     if (messageElement) {
         messageElement.parentNode.removeChild(messageElement);
