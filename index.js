@@ -1,6 +1,7 @@
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('notice_board.db');
 const express = require('express');
+const https = require('https');
 const app = express();
 app.use(express.static('static'));
 const events = require('events');
@@ -22,6 +23,8 @@ function log(message) {
 	const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
 	const logMessage = formattedDate + ': ' + message;
 	
+	console.log(logMessage)
+
 	fs.appendFile('notice_board.log', logMessage + '\n', function(err) {
 	if (err) {
 		console.log('Error writing to log file: ' + err);
@@ -203,6 +206,16 @@ app.get('/messages/live', (req, res) => {
 	});	
 });
 
-app.listen(port, ip, () => {
-	console.log(`Notice board listening at http://${ip}:${port}`);
+// Load SSL certificates
+var key = fs.readFileSync('ssl/selfsigned.key');
+var cert = fs.readFileSync('ssl/selfsigned.crt');
+var options = {
+  key: key,
+  cert: cert
+};
+
+var server = https.createServer(options, app);
+
+server.listen(port, ip, () => {
+	console.log(`Notice board listening at https://${ip}:${port}`);
 });
