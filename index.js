@@ -2,6 +2,7 @@ const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database('notice_board.db');
 const express = require('express');
 const app = express();
+app.use(express.static('static'));
 const events = require('events');
 const emitter = new events.EventEmitter();
 emitter.setMaxListeners(200);
@@ -12,6 +13,7 @@ const fs = require('fs');
 // Read the configuration file
 const config = JSON.parse(fs.readFileSync('config.json'));
 
+// Set config properties
 const ip = config.ip
 const port = config.port
 
@@ -35,8 +37,6 @@ function get_messages() {
 	});
 }
 
-app.use(express.static('static'));
-
 // Add a message to the messages table
 function add_message(name, content) {
 	// Get the current unix timestamp
@@ -51,53 +51,32 @@ function add_message(name, content) {
 		return Promise.resolve();
 	}
 
-	//
+	// If the message content is /bunny, change the content of the message to gif tag
 	if (content == "/bunny") {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'INSERT INTO messages (name, content, timestamp) VALUES (?, ?, ?)',
-				[name, '<img src=/assets/img/happy_bunny.gif height="200" width="307">', timestamp],
-				function(err) {
-					if (err) {
-						reject(err);
-					}
-					else {
-						// Emit a 'message' event with the new message data
-						emitter.emit('message', {
-							id: this.lastID,
-							name,
-							content: '<img src=/assets/img/happy_bunny.gif height="200" width="307">',
-							timestamp
-						});
-						resolve(this.lastID);
-					}
-				}
-			);
-		});
+		content = '<img src=/assets/img/happy_bunny.gif height="200" width="307">'
 	}
-	else {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'INSERT INTO messages (name, content, timestamp) VALUES (?, ?, ?)',
-				[name, content, timestamp],
-				function(err) {
-					if (err) {
-						reject(err);
-					}
-					else {
-						// Emit a 'message' event with the new message data
-						emitter.emit('message', {
-							id: this.lastID,
-							name,
-							content,
-							timestamp
-						});
-						resolve(this.lastID);
-					}
+
+	return new Promise((resolve, reject) => {
+		db.run(
+			'INSERT INTO messages (name, content, timestamp) VALUES (?, ?, ?)',
+			[name, content, timestamp],
+			function(err) {
+				if (err) {
+					reject(err);
 				}
-			);
-		});
-	}
+				else {
+					// Emit a 'message' event with the new message data
+					emitter.emit('message', {
+						id: this.lastID,
+						name,
+						content,
+						timestamp
+					});
+					resolve(this.lastID);
+				}
+			}
+		);
+	});
 }
 
 // Delete a message from the messages table by its ID
