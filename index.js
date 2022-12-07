@@ -17,6 +17,19 @@ const config = JSON.parse(fs.readFileSync('config.json'));
 const ip = config.ip
 const port = config.port
 
+function log(message) {
+	const date = new Date();
+	const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+	const logMessage = formattedDate + ': ' + message;
+	
+	fs.appendFile('notice_board.log', logMessage + '\n', function(err) {
+	if (err) {
+		console.log('Error writing to log file: ' + err);
+	}
+	});
+}
+
+
 // Create the messages table if it does not exist
 db.run('CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, content TEXT, timestamp INTEGER)');
 
@@ -72,6 +85,7 @@ function add_message(name, content) {
 						content,
 						timestamp
 					});
+					log('Received new message with ID ' + this.lastID + ' from "' + name + '" with content "' + content + '"')
 					resolve(this.lastID);
 				}
 			}
@@ -91,6 +105,7 @@ function delete_message(id) {
 				emitter.emit('delete', {
 					id: id
 				});
+				log('Deleted message ID ' + id + " from live message table")
 				resolve(this.changes);
 			}
 		});
@@ -115,6 +130,7 @@ function archive_message(id) {
                         delete_message(id)
                             .then(() => resolve(this.lastID))
                             .catch((err) => reject(err));
+						log('Moved message ID ' + id + "to archive table")
                     }
                 });
             }
