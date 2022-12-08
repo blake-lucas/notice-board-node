@@ -1,18 +1,18 @@
 const sqlite3 = require('sqlite3');
-const db = new sqlite3.Database('notice_board.db');
+const db = new sqlite3.Database(__dirname + '/notice_board.db');
 const express = require('express');
 const https = require('https');
 const app = express();
-app.use(express.static('static'));
+app.use(express.static(__dirname + '/static'));
 const events = require('events');
 const emitter = new events.EventEmitter();
-emitter.setMaxListeners(200);
+emitter.setMaxListeners(1000);
 
 // Load the fs module
 const fs = require('fs');
 
 // Read the configuration file
-const config = JSON.parse(fs.readFileSync('config.json'));
+const config = JSON.parse(fs.readFileSync(__dirname + '/config.json'));
 
 // Set config properties
 const ip = config.ip
@@ -25,7 +25,7 @@ function log(message) {
 	
 	console.log(logMessage)
 
-	fs.appendFile('notice_board.log', logMessage + '\n', function(err) {
+	fs.appendFile(__dirname + '/notice_board.log', logMessage + '\n', function(err) {
 	if (err) {
 		console.log('Error writing to log file: ' + err);
 	}
@@ -207,8 +207,8 @@ app.get('/messages/live', (req, res) => {
 });
 
 // Load SSL certificates
-var key = fs.readFileSync('ssl/selfsigned.key');
-var cert = fs.readFileSync('ssl/selfsigned.crt');
+var key = fs.readFileSync(__dirname + '/ssl/privkey.pem');
+var cert = fs.readFileSync(__dirname + '/ssl/fullchain.pem');
 var options = {
   key: key,
   cert: cert

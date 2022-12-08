@@ -78,7 +78,7 @@ function isCursorInBottomRightCorner() {
 	var cursorY = window.event.clientY
   
 	// Check if the cursor is within 10% of the bottom right corner of the web page
-	if (cursorX >= pageWidth * 0.9 && cursorY >= pageHeight * 0.9) {
+	if (cursorX >= pageWidth * 0.8 && cursorY >= pageHeight * 0.5) {
 	  return true
 	}
 	else {
@@ -195,7 +195,12 @@ document.addEventListener('keydown', function(event) {
 function create_message(id, name, content, timestamp) {
 	var message_object = new Message(id, name, content, timestamp).formatted
 	document.getElementById("message-container").appendChild(message_object)
+  
+	// Scroll to the bottom of the page
+	window.scrollTo(0, document.body.scrollHeight);
 }
+  
+  
 
 // Send message to back end using POST request
 const send_message = () => {
@@ -219,7 +224,7 @@ const send_message = () => {
 	  // create_message(data.id, name, content, Date.now());
   
 	  // Clear the input fields
-	  document.getElementById("name").value = ""
+	  // document.getElementById("name").value = ""
 	  document.getElementById("message").value = ""
 	});
 }

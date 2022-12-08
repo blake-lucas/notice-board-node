@@ -35,23 +35,34 @@
 				margin-left: 4px;
 				margin-bottom: 2px;
 				position: sticky;
-				left: 95%
+				left: 95%;
+				z-index: 100;
 			}
 			.archive-button {
 				margin-left: 4px;
 				margin-bottom: 2px;
 				position: sticky;
-				left: 95%
+				left: 95%;
+				z-index: 101;
+			}
+			.top-div {
+				background: #393E41;
+				position: fixed;
+				width: 100%;
+				z-index: 100;
+			}
+			.message-container {
+				padding-top: 3%
 			}
 		</style>
 	</head>
-	<body class="mcnallan-grey">
-        <div class="row grey-text text-lighten-3">
+	<body class="mcnallan-grey" id="body">
+        <div class="row grey-text text-lighten-3 top-div">
             <div class="col s2"></div>
             <div class="col s8 center-align"><h5 id="time-date"></h5></div>
             <div class="col s2"></div>
         </div>
-		<div class="row grey-text text-lighten-3" id="message-container">	<!--Message container-->
+		<div class="row grey-text text-lighten-3 message-container" id="message-container">	<!--Message container-->
 			<!--<div class="row" id="999">
 				<hr>
 				<div class="col s1 center-align">name</div>
