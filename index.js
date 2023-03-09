@@ -77,6 +77,11 @@ function add_message(name, content) {
 		content = '<img src=/assets/img/snickles.jpg height="270" width="360">'
 	}
 
+	// pig
+	if (content == "/pig") {
+		content = '<img src=/assets/img/pig.gif height="270" width="360">'
+	}
+
 	return new Promise((resolve, reject) => {
 		db.run(
 			'INSERT INTO messages (name, content, timestamp) VALUES (?, ?, ?)',
