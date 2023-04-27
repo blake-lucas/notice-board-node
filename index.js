@@ -67,6 +67,11 @@ function add_message(name, content) {
 		return Promise.resolve();
 	}
 
+	// If the message starts with /image, replace the content with a <img> tag
+	if (content.startsWith("/image ")) {
+		content = '<img src="' + content.split(" ")[1] + '">'
+	}
+
 	// If the message content is /bunny, change the content of the message to gif tag
 	if (content == "/bunny") {
 		content = '<img src=/assets/img/happy_bunny.gif height="200" width="307">'
