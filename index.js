@@ -69,7 +69,12 @@ function add_message(name, content) {
 
 	// If the message starts with /image, replace the content with a <img> tag
 	if (content.startsWith("/image ")) {
-		content = '<img src="' + content.split(" ")[1] + '">'
+		content = '<img height="25%" width="25%" src="' + content.split(" ")[1] + '">'
+	}
+
+	// If the message starts with /video, replace the content with a <video> tag
+	if (content.startsWith("/video ")) {
+		content = '<video autoplay height="25%" width="25%" src="' + content.split(" ")[1] + '">'
 	}
 
 	// If the message content is /bunny, change the content of the message to gif tag
